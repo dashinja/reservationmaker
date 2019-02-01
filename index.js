@@ -15,6 +15,11 @@ const connection = mysql.createConnection({
   database: 'reservation_db'
 });
 
+connection.connect(err => {
+  if (err) throw err;
+  console.log('Connecting at id: ', connection.threadId);
+});
+
 let reserveData = [
   {
     reserveCounter: 'expression',
@@ -65,14 +70,28 @@ app.get('/api/reserve/:id', (req, res) => {
 app.post('/api/reserve', (req, res) => {
   reserveData.push(req.body);
   console.log(req.body);
-  res.redirect('/');
-}) /
-  // reserve tab
-  // table tab
-  // [🔥] Here is working our app ⭐
-  app.listen(PORT, function() {
-    console.log('App listening on PORT ' + PORT);
+
+  let myQuery =
+    'INSERT INTO reservations SET res_name = ?, res_phone = ?, res_email = ?, res_unique_id = ?';
+  let options = [
+    req.body.name,
+    req.body.phoneNumber,
+    req.body.email,
+    req.body.uniqueID
+  ];
+  connection.query(myQuery, options, err => {
+    if (err) throw err;
+    console.log('Reservation Data Saved to DB');
   });
+
+  res.redirect('/');
+});
+// reserve tab
+// table tab
+// [🔥] Here is working our app ⭐
+app.listen(PORT, function() {
+  console.log('App listening on PORT ' + PORT);
+});
 
 //  /* freddy is the coolest like evar
 //  byron is wearing a very nice shirt today
