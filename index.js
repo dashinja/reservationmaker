@@ -3,10 +3,9 @@ const path = require('path');
 const mysql = require('mysql');
 require('dotenv').config();
 
-// 🔥 Use of eexpress
 const app = express();
-// 💩 Our port 💁‍
 const PORT = process.env.PORT || 3000;
+
 const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
@@ -30,11 +29,9 @@ let reserveData = [
   }
 ];
 
-// [📦] Here is the middleware of the Json parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Pages to serve
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -58,23 +55,12 @@ var eatingList = [];
 app.get('/api/table/', (req, res) => {
   // Pull the data from the database
   let mySqlQuery = 'SELECT * FROM reservations';
-  let mainObj = {};
+
   connection.query(mySqlQuery, (err, response) => {
     if (err) throw err;
-    console.log(`This is the response obj ${JSON.stringify(response)}`);
-    console.log(
-      'This is the response length:',
-      JSON.stringify(response.length)
-    );
-
     var newConstructor = JSON.stringify(response);
 
     res.send(newConstructor);
-    // for (let i = 0; i < response.length; i++) {
-    // mainObj.push(res[i]);
-
-    // console.log(newFun);
-    // }
   });
 });
 
@@ -92,7 +78,6 @@ app.get('/api/reserve/:id', (req, res) => {
   }
 });
 
-// Server post method
 app.post('/api/reserve', (req, res) => {
   reserveData.push(req.body);
   console.log(` 🔥 🔥 ${req.body}`);
@@ -106,14 +91,6 @@ app.post('/api/reserve', (req, res) => {
     req.body.uniqueID
   ];
 
-  let reservationCount = reserveData.length;
-
-  if (reservationCount >= 5) {
-    waitingList.push(options);
-  } else {
-    eatingList.push(options);
-  }
-
   connection.query(myQuery, options, err => {
     if (err) throw err;
     console.log('Reservation Data Saved to DB');
@@ -121,15 +98,7 @@ app.post('/api/reserve', (req, res) => {
 
   res.redirect('/');
 });
-// reserve tab
-// table tab
-// [🔥] Here is working our app ⭐
+
 app.listen(PORT, function() {
   console.log('App listening on PORT ' + PORT);
 });
-
-//  /* freddy is the coolest like evar
-//  byron is wearing a very nice shirt today
-//  the rest of u are ok... just ok
-// */
-// 😘
