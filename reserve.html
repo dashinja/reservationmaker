@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+      integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ"
+      crossorigin="anonymous"
+    />
+    <title>Hot Restaurant</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron jumbotron-fluid text-center mx-auto">
+        <h1><i class="fas fa-fire-alt"></i>Hot Restarurant</h1>
+        <h2 class="lead">Make your reservation</h2>
+        <button type="button" class="btn btn-primary">View Tables</button>
+        <button type="button" class="btn btn-danger">
+          <i class="fas fa-toilet-paper "></i>Make Reservations
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Table Reservation</div>
+        <div class="card-body">
+          <form>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="inputName">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="John Smith"
+                />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="inputphoneNumber">Phone Number</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="number"
+                  placeholder="(000)000-0000"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="text"
+                class="form-control"
+                id="email"
+                placeholder="someone@somewhere.com"
+              />
+            </div>
+            <div class="form-group">
+              <label for="inputuniqueID">Unique ID</label>
+              <input type="text" class="form-control" id="uniqueID" />
+            </div>
+            <button type="submit" id="btn-submit" class="btn btn-primary">
+              Submit
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // Question: What does this code do?
+      // let counter = 0;
+      $('#btn-submit').on('click', function(event) {
+        event.preventDefault();
+        // counter++;
+        var newReservation = {
+          // reserveCounter: counter,
+          name: $('#name').val(),
+          phoneNumber: $('#number').val(),
+          email: $('#email').val(),
+          uniqueID: $('#uniqueID').val()
+        };
+
+        // Question: What does this code do??
+        $.post('/api/reserve', newReservation).then(function(data) {
+          console.log('add.html', data);
+          alert('Adding character...');
+        });
+      });
+    </script>
+  </body>
+</html>
