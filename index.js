@@ -52,6 +52,32 @@ app.get('/api/reserve/', (req, res) => {
   res.json(reserveData);
 });
 
+var waitingList = [];
+var eatingList = [];
+
+app.get('/api/table/', (req, res) => {
+  // Pull the data from the database
+  let mySqlQuery = 'SELECT * FROM reservations';
+  let mainObj = {};
+  connection.query(mySqlQuery, (err, response) => {
+    if (err) throw err;
+    console.log(`This is the response obj ${JSON.stringify(response)}`);
+    console.log(
+      'This is the response length:',
+      JSON.stringify(response.length)
+    );
+
+    var newConstructor = JSON.stringify(response);
+
+    res.send(newConstructor);
+    // for (let i = 0; i < response.length; i++) {
+    // mainObj.push(res[i]);
+
+    // console.log(newFun);
+    // }
+  });
+});
+
 app.get('/api/reserve/:id', (req, res) => {
   // we are getting the ID of the URL here
   let uniqueId = req.params.id;
@@ -69,7 +95,7 @@ app.get('/api/reserve/:id', (req, res) => {
 // Server post method
 app.post('/api/reserve', (req, res) => {
   reserveData.push(req.body);
-  console.log(req.body);
+  console.log(` 🔥 🔥 ${req.body}`);
 
   let myQuery =
     'INSERT INTO reservations SET res_name = ?, res_phone = ?, res_email = ?, res_unique_id = ?';
@@ -79,6 +105,15 @@ app.post('/api/reserve', (req, res) => {
     req.body.email,
     req.body.uniqueID
   ];
+
+  let reservationCount = reserveData.length;
+
+  if (reservationCount >= 5) {
+    waitingList.push(options);
+  } else {
+    eatingList.push(options);
+  }
+
   connection.query(myQuery, options, err => {
     if (err) throw err;
     console.log('Reservation Data Saved to DB');
