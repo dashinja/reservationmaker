@@ -3,10 +3,12 @@ const path = require('path');
 const mysql = require('mysql');
 require('dotenv').config();
 
-// 🔥 Use of eexpress
 const app = express();
-// 💩 Our port 💁‍
 const PORT = process.env.PORT || 3000;
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
@@ -30,11 +32,6 @@ let reserveData = [
   }
 ];
 
-// [📦] Here is the middleware of the Json parser
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Pages to serve
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -52,6 +49,21 @@ app.get('/api/reserve/', (req, res) => {
   res.json(reserveData);
 });
 
+var waitingList = [];
+var eatingList = [];
+
+app.get('/api/table/', (req, res) => {
+  // Pull the data from the database
+  let mySqlQuery = 'SELECT * FROM reservations';
+
+  connection.query(mySqlQuery, (err, response) => {
+    if (err) throw err;
+    var newConstructor = JSON.stringify(response);
+
+    res.send(newConstructor);
+  });
+});
+
 app.get('/api/reserve/:id', (req, res) => {
   // we are getting the ID of the URL here
   let uniqueId = req.params.id;
@@ -66,10 +78,9 @@ app.get('/api/reserve/:id', (req, res) => {
   }
 });
 
-// Server post method
 app.post('/api/reserve', (req, res) => {
   reserveData.push(req.body);
-  console.log(req.body);
+  console.log(` 🔥 🔥 ${req.body}`);
 
   let myQuery =
     'INSERT INTO reservations SET res_name = ?, res_phone = ?, res_email = ?, res_unique_id = ?';
@@ -79,6 +90,7 @@ app.post('/api/reserve', (req, res) => {
     req.body.email,
     req.body.uniqueID
   ];
+
   connection.query(myQuery, options, err => {
     if (err) throw err;
     console.log('Reservation Data Saved to DB');
@@ -86,15 +98,7 @@ app.post('/api/reserve', (req, res) => {
 
   res.redirect('/');
 });
-// reserve tab
-// table tab
-// [🔥] Here is working our app ⭐
+
 app.listen(PORT, function() {
   console.log('App listening on PORT ' + PORT);
 });
-
-//  /* freddy is the coolest like evar
-//  byron is wearing a very nice shirt today
-//  the rest of u are ok... just ok
-// */
-// 😘
