@@ -6,6 +6,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
@@ -28,9 +31,6 @@ let reserveData = [
     uniqueID: '12123'
   }
 ];
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
